@@ -1,0 +1,25 @@
+{
+  "name": "frontlog-storage",
+  "version": "1.0.0",
+  "description": "Ferramenta de registro de logs para o frontend de aplicações Web",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thiegobarros/frontlog-storage.git"
+  },
+  "keywords": [
+    "brasil",
+    "log",
+    "logging",
+    "frontend"
+  ],
+  "author": "Thiego Barros",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thiegobarros/frontlog-storage/issues"
+  },
+  "homepage": "https://github.com/thiegobarros/frontlog-storage#readme"
+}
