@@ -1,19 +1,20 @@
 var storage = 'local';
-var logByAttr = true;
+var logByAttribute = true;
 var logClicks = true;
-var logErrors = true;
 var logKeyPress = true;
-var logHover = true;
+var logErrors = true;
+var logOnHover = true;
+var onHoverTime = 1000;
 var timeStamp = 0;
-var minTime = 1000;
 
 export function setup(setup) {
     storage = setup.storage === undefined ? storage: setup.storage;
+    logByAttribute = setup.logByAttribute === undefined ? logByAttribute: setup.logByAttribute;
     logClicks = setup.logClicks === undefined ? logClicks: setup.logClicks;
-    logErrors = setup.logErrors === undefined ? logErrors: setup.logErrors;
     logKeyPress = setup.logKeyPress === undefined ? logKeyPress: setup.logKeyPress;
-    logHover = setup.logHover === undefined ? logHover: setup.logHover;
-    minTime = setup.minTime === undefined ? minTime: setup.minTime;
+    logErrors = setup.logErrors === undefined ? logErrors: setup.logErrors;
+    logOnHover = setup.logOnHover === undefined ? logOnHover: setup.logOnHover;
+    onHoverTime = setup.onHoverTime === undefined ? onHoverTime: setup.onHoverTime;
 }
 
 function getStorageItem (param) {
@@ -25,18 +26,18 @@ function setStorageItem (param, obj) {
 }
 
 function canSave (elem, param) {
-    if (!logByAttr) return true;
-    if (logByAttr && elem.dataset.frontLog==="true") return true;
-    if (logByAttr && param==="click" && elem.dataset.frontLog==="click") return true;
-    if (logByAttr && param==="keypress" && elem.dataset.frontLog==="keypress") return true;
-    if (logByAttr && param==="hover" && elem.dataset.frontLog==="hover") return true;
+    if (!logByAttribute) return true;
+    if (logByAttribute && elem.dataset.frontLog==="true") return true;
+    if (logByAttribute && param==="click" && elem.dataset.frontLog==="click") return true;
+    if (logByAttribute && param==="keypress" && elem.dataset.frontLog==="keypress") return true;
+    if (logByAttribute && param==="hover" && elem.dataset.frontLog==="hover") return true;
     return false;
 }
 
-//Log click
+//Logging Click
 function clickMouse(event) {
     if (logClicks && canSave(event.target, "click")) {
-        var clicks = getStorageItem("log_clicks");
+        var clicks = getStorageItem("frontlog_click");
         clicks.push(
             {
                 date: new Date(),
@@ -46,15 +47,15 @@ function clickMouse(event) {
                 element: event.target.outerHTML
             }
         );
-        setStorageItem("log_clicks", clicks);
+        setStorageItem("frontlog_click", clicks);
     }
 }
 document.addEventListener('click', clickMouse);
 
-//Log key press
+//Logging Key Press
 function keyPress(event) {
     if (logKeyPress && canSave(event.target, "keypress")) {
-        var keyPress = getStorageItem("log_keyPress");
+        var keyPress = getStorageItem("frontlog_keypress");
         keyPress.push(
             {
                 date: new Date(),
@@ -63,12 +64,12 @@ function keyPress(event) {
                 value: event.key
             }
         );
-        setStorageItem("log_keyPress", keyPress);
+        setStorageItem("frontlog_keypress", keyPress);
     }
 }
 document.addEventListener('keypress', keyPress);
 
-//log errors
+//logging Errors
 console.defaultError = console.error.bind(console);
 console.errors = [];
 
@@ -77,7 +78,7 @@ console.error = function(){
         console.defaultError.apply(console, arguments);
         console.errors.push(Array.from(arguments));
 
-        var errors = getStorageItem("log_errors");
+        var errors = getStorageItem("frontlog_error");
         console.errors.forEach(element => {
             element.forEach(error => {
                 errors.push(
@@ -89,13 +90,13 @@ console.error = function(){
                 );
             });
         });
-        setStorageItem("log_errors", errors);
+        setStorageItem("frontlog_error", errors);
     }
 }
 
 window.onerror = function(message, source, lineno, colno) {
     if (logErrors) {
-        var errors = getStorageItem("log_errors");
+        var errors = getStorageItem("frontlog_error");
         errors.push(
             {
                 date: new Date(),
@@ -103,12 +104,12 @@ window.onerror = function(message, source, lineno, colno) {
                 error: `Line: ${lineno} Column: ${colno} Source: ${source} Message: ${message}`
             }
         );
-        setStorageItem("log_errors", errors);
+        setStorageItem("frontlog_error", errors);
     }
     return false;
 };
 
-//log hover
+//logging On Hover
 function mouseOver(event) {
     timeStamp = event.timeStamp;
 }
@@ -116,8 +117,8 @@ document.addEventListener('mouseover', mouseOver);
 
 function mouseOut(event) {
     timeStamp = event.timeStamp - timeStamp;
-    if (logHover && timeStamp >= minTime && canSave(event.target, "hover")) {
-        var hover = getStorageItem("log_hover");
+    if (logOnHover && timeStamp >= onHoverTime && canSave(event.target, "hover")) {
+        var hover = getStorageItem("frontlog_onhover");
         hover.push(
             {
                 date: new Date(),
@@ -127,7 +128,7 @@ function mouseOut(event) {
                 timeStamp: timeStamp
             }
         );
-        setStorageItem("log_hover", hover);
+        setStorageItem("frontlog_onhover", hover);
     }
 }
 document.addEventListener('mouseout', mouseOut);
