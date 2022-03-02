@@ -1,6 +1,6 @@
 {
   "name": "frontlog-storage",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Ferramenta de registro de logs para o frontend de aplicações Web",
   "main": "index.js",
   "scripts": {

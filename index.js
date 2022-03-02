@@ -30,7 +30,7 @@ function canSave (elem, param) {
     if (logByAttribute && elem.dataset.frontLog==="true") return true;
     if (logByAttribute && param==="click" && elem.dataset.frontLog==="click") return true;
     if (logByAttribute && param==="keypress" && elem.dataset.frontLog==="keypress") return true;
-    if (logByAttribute && param==="hover" && elem.dataset.frontLog==="hover") return true;
+    if (logByAttribute && param==="onhover" && elem.dataset.frontLog==="onhover") return true;
     return false;
 }
 
@@ -117,7 +117,7 @@ document.addEventListener('mouseover', mouseOver);
 
 function mouseOut(event) {
     timeStamp = event.timeStamp - timeStamp;
-    if (logOnHover && timeStamp >= onHoverTime && canSave(event.target, "hover")) {
+    if (logOnHover && timeStamp >= onHoverTime && canSave(event.target, "onhover")) {
         var hover = getStorageItem("frontlog_onhover");
         hover.push(
             {
