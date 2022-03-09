@@ -4,17 +4,28 @@ var logClicks = true;
 var logKeyPress = true;
 var logErrors = true;
 var logOnHover = true;
-var onHoverTime = 1000;
+var onHoverTiming = 1000;
 var timeStamp = 0;
 
-export function setup(setup) {
+var endPoint = '';
+var sendingTiming = 10000;
+var headers = [
+    ['Content-Type', 'application/json']
+];
+
+var time;
+
+function frontlog(setup) {
     storage = setup.storage === undefined ? storage: setup.storage;
     logByAttribute = setup.logByAttribute === undefined ? logByAttribute: setup.logByAttribute;
     logClicks = setup.logClicks === undefined ? logClicks: setup.logClicks;
     logKeyPress = setup.logKeyPress === undefined ? logKeyPress: setup.logKeyPress;
     logErrors = setup.logErrors === undefined ? logErrors: setup.logErrors;
     logOnHover = setup.logOnHover === undefined ? logOnHover: setup.logOnHover;
-    onHoverTime = setup.onHoverTime === undefined ? onHoverTime: setup.onHoverTime;
+    onHoverTiming = setup.onHoverTiming === undefined ? onHoverTiming: setup.onHoverTiming;
+    endPoint = setup.endPoint === undefined ? endPoint: setup.endPoint;
+    sendingTiming = setup.sendingTiming === undefined ? sendingTiming: setup.sendingTiming;
+    headers = setup.headers === undefined ? headers: setup.headers;
 }
 
 function getStorageItem (param) {
@@ -34,10 +45,20 @@ function canSave (elem, param) {
     return false;
 }
 
+function canSend () {
+    let clicks = getStorageItem("frontlog_click");
+    let keypress = getStorageItem("frontlog_keypress");
+    let errors = getStorageItem("frontlog_error");
+    let onhover = getStorageItem("frontlog_onhover");
+
+    if (clicks.length === 0 && keypress.length === 0 && errors.length === 0 && onhover.length === 0 ) return false;
+    return true;
+}
+
 //Logging Click
 function clickMouse(event) {
     if (logClicks && canSave(event.target, "click")) {
-        var clicks = getStorageItem("frontlog_click");
+        let clicks = getStorageItem("frontlog_click");
         clicks.push(
             {
                 date: new Date(),
@@ -55,7 +76,7 @@ document.addEventListener('click', clickMouse);
 //Logging Key Press
 function keyPress(event) {
     if (logKeyPress && canSave(event.target, "keypress")) {
-        var keyPress = getStorageItem("frontlog_keypress");
+        let keyPress = getStorageItem("frontlog_keypress");
         keyPress.push(
             {
                 date: new Date(),
@@ -78,7 +99,7 @@ console.error = function(){
         console.defaultError.apply(console, arguments);
         console.errors.push(Array.from(arguments));
 
-        var errors = getStorageItem("frontlog_error");
+        let errors = getStorageItem("frontlog_error");
         console.errors.forEach(element => {
             element.forEach(error => {
                 errors.push(
@@ -96,7 +117,7 @@ console.error = function(){
 
 window.onerror = function(message, source, lineno, colno) {
     if (logErrors) {
-        var errors = getStorageItem("frontlog_error");
+        let errors = getStorageItem("frontlog_error");
         errors.push(
             {
                 date: new Date(),
@@ -117,8 +138,8 @@ document.addEventListener('mouseover', mouseOver);
 
 function mouseOut(event) {
     timeStamp = event.timeStamp - timeStamp;
-    if (logOnHover && timeStamp >= onHoverTime && canSave(event.target, "onhover")) {
-        var hover = getStorageItem("frontlog_onhover");
+    if (logOnHover && timeStamp >= onHoverTiming && canSave(event.target, "onhover")) {
+        let hover = getStorageItem("frontlog_onhover");
         hover.push(
             {
                 date: new Date(),
@@ -132,3 +153,39 @@ function mouseOut(event) {
     }
 }
 document.addEventListener('mouseout', mouseOut);
+
+//Idle User
+window.onload = resetTimer;
+document.onmousemove = resetTimer;
+document.onkeydown = resetTimer;
+
+//Sending to EndPoint
+function sending() {
+    if (canSend()) {
+        fetch(endPoint, {
+            method: "POST",
+            headers: new Headers(headers),
+            body: JSON.stringify({
+                clicks: getStorageItem("frontlog_click"),
+                keyPress: getStorageItem("frontlog_keypress"),
+                onHover: getStorageItem("frontlog_onhover"),
+                errors: getStorageItem("frontlog_error")
+            })
+        })
+        .then(resp => {
+            setStorageItem("frontlog_click", []);
+            setStorageItem("frontlog_keypress", []);
+            setStorageItem("frontlog_onhover", []);
+            setStorageItem("frontlog_error", []);
+        });
+    }
+}
+
+function resetTimer() {
+    if (endPoint !== '') {
+        clearTimeout(time);
+        time = setTimeout(sending, sendingTiming);
+    }
+}
+
+export default frontlog;

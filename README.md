@@ -14,7 +14,7 @@ npm install frontlog-storage
 #### Importação
 
 ```sh
-import * as FrontLog from "frontlog-storage";
+import frontlog from "frontlog-storage";
 ```
 
 #### Configurações
@@ -27,7 +27,10 @@ FrontLog.setup({
     logKeyPress: boolean, //Realiza o log das teclas pressionadas nos elementos, padrão: true
     logErrors: boolean, //Realiza o log dos erros gerados no console e na janela do navegador, padrão: true
     logOnHover: boolean, //Realiza o log do evento "on hover" do mouse nos elementos, padrão: true
-    onHoverTime: Integer(milissegundos), //Parametro de tempo para o log de "on hover", padrão: 1000
+    onHoverTiming: Integer(milissegundos), //Parametro de tempo para o log de "on hover", padrão: 1000
+    endPoint: 'URL', //Endpoint para envio das informações via fetch, padrão: ""
+    sendingTiming: Integer(milissegundos), //Parametro de tempo para o envio das informações para o servidor, padrão: 10000
+    headers: array[], //Parametro para customizar headers da requisição, padrão: [ ['Content-Type', 'application/json'] ]
 });
 ```
 
