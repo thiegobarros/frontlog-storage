@@ -1,7 +1,7 @@
 # Front Log Storage
 ### _Ferramenta de registro de logs para o frontend de aplicações Web_
 
-[![Status](https://img.shields.io/badge/npm-v1.1.0-green.svg)](https://www.npmjs.com/package/frontlog-storage)
+[![Status](https://img.shields.io/badge/npm-v1.3.0-green.svg)](https://www.npmjs.com/package/frontlog-storage)
 
 ## Instalação
 
@@ -58,11 +58,11 @@ FrontLog.setup({
 
 ```sh
 {
-    date: //pega data e hora que o elemento foi clicado,
-    tag: //tag do elemento,
-    id: //id do elemento,
-    name: //name do elemento,
-    element: //elemento em forma de string
+    date: //Pega data e hora que o elemento foi clicado,
+    tag: //Tag do elemento,
+    id: //Id do elemento,
+    name: //Name do elemento,
+    element: //Elemento em forma de string
 }
 ```
 
@@ -71,9 +71,11 @@ FrontLog.setup({
 ```sh
 {
     date: //Pega data e hora que a tecla foi pressionada,
-    id: //Código da tecla,
-    name: //Nome da tecla,
-    value: //A tecla
+    element_id: //Id do elemento,
+    element_name: //Name do elemento,
+    key_id: //Código da tecla,
+    key_name: //Nome da tecla,
+    key_value: //A tecla
 }
 ```
 

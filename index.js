@@ -64,7 +64,7 @@ function clickMouse(event) {
                 date: new Date(),
                 tag: event.target.tagName,
                 id: event.target.id,
-                name: event.target.name,
+                name: event.target.getAttribute('name'),
                 element: event.target.outerHTML
             }
         );
@@ -80,9 +80,11 @@ function keyPress(event) {
         keyPress.push(
             {
                 date: new Date(),
-                id: event.charCode || event.keyCode,
-                name: event.code,
-                value: event.key
+                element_id: event.target.id,
+                element_name: event.target.getAttribute('name'),
+                key_id: event.charCode || event.keyCode,
+                key_name: event.code,
+                key_value: event.key
             }
         );
         setStorageItem("frontlog_keypress", keyPress);
@@ -145,7 +147,7 @@ function mouseOut(event) {
                 date: new Date(),
                 tag: event.target.tagName,
                 id: event.target.id,
-                name: event.target.name,
+                name: event.target.getAttribute('name'),
                 timeStamp: timeStamp
             }
         );
