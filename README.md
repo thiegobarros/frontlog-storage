@@ -1,68 +1,68 @@
-# Front Log Storage
-### _Ferramenta de registro de logs para o frontend de aplicações Web_
+# Frontlog Storage
+### _A logging tool for the front-end of web applications_
 
-[![Status](https://img.shields.io/badge/npm-v1.3.0-green.svg)](https://www.npmjs.com/package/frontlog-storage)
+[![Status](https://img.shields.io/badge/npm-v1.3.1-green.svg)](https://www.npmjs.com/package/frontlog-storage)
 
-## Instalação
+## Instalation
 
-#### Via NPM
+#### NPM
 
 ```sh
 npm install frontlog-storage
 ```
 
-#### Importação
+#### Import
 
 ```sh
 import frontlog from "frontlog-storage";
 ```
 
-#### Configurações
+#### How to use _data-front-log_
 
 ```sh
-FrontLog.setup({
-    storage: 'local|session', //Seleciona qual storage irá ser usado, padrão: LocalStorage
-    logByAttribute: boolean, //Torna a seleção pelo atributo "data-front-log" nos elementos HTML, padrão: true 
-    logClicks: boolean, //Realiza o log dos clicks nos elementos, padrão: true
-    logKeyPress: boolean, //Realiza o log das teclas pressionadas nos elementos, padrão: true
-    logErrors: boolean, //Realiza o log dos erros gerados no console e na janela do navegador, padrão: true
-    logOnHover: boolean, //Realiza o log do evento "on hover" do mouse nos elementos, padrão: true
-    onHoverTiming: Integer(milissegundos), //Parametro de tempo para o log de "on hover", padrão: 1000
-    endPoint: 'URL', //Endpoint para envio das informações via fetch, padrão: ""
-    sendingTiming: Integer(milissegundos), //Parametro de tempo para o envio das informações para o servidor, padrão: 10000
-    headers: array[], //Parametro para customizar headers da requisição, padrão: [ ['Content-Type', 'application/json'] ]
+<p id="elem_id" name="elem_name" data-front-log></p> (Get all available logs)
+<p id="elem_id" name="elem_name" data-front-log="click"></p> (Catch only the "click" events on the element)
+<input id="elem_id" name="elem_name" data-front-log="keypress"/> (Gets only the "keypress" events on the element)
+<p id="elem_id" name="elem_name" data-front-log="onhover"></p> (Catch only the "on hover" events on the element)
+```
+
+#### Configurations
+
+```sh
+frontLog({
+    storage: 'local|session', (Selects which storage will be used, default: local)
+    logByAttribute: boolean, (Makes selection by "data-front-log" attribute on HTML elements, default: true)
+    logClicks: boolean, (Logs clicks on elements, default: true)
+    logKeyPress: boolean, (Logs key presses on elements, default: true)
+    logErrors: boolean, (Log errors generated in console and browser window, default: true)
+    logOnHover: boolean, (Logs mouse "on hover" event on elements, default: true)
+    onHoverTiming: Integer(milliseconds), (Time parameter for "on hover" log, default: 1000)
+    endPoint: 'URL', (Endpoint for sending information via fetch, default: "")
+    sendingTiming: Integer(milliseconds), (Time parameter for sending information to the server, default: 10000)
+    headers: array[], (Parameter to customize request headers, default: [ ['Content-Type', 'application/json'] ])
 });
 ```
 
-#### Utilizando o _data-front-log_
+## Storage keys
 
-```sh
-<p id="elem_id" name="elem_name" data-front-log></p> //Pega todos os logs disponivéis
-<p id="elem_id" name="elem_name" data-front-log="click"></p> //Pega somente os eventos de "click" no elemento
-<input id="elem_id" name="elem_name" data-front-log="keypress"/> //Pega somente os eventos de "keypress" no elemento
-<p id="elem_id" name="elem_name" data-front-log="onhover"></p> //Pega somente os eventos de "on hover" no elemento
-```
-
-## Variáveis no Storage
-
-| Chave | Valor |
+| Key | Value |
 | ------ | ------ |
-| frontlog_click | Lista que guarda as referências dos elementos clicados |
-| frontlog_keypress | Lista que guarda as referências das teclas pressionadas nos elementos |
-| frontlog_onhover | Lista que guarda as referências dos elementos que tiveram o "pointer" em cima a partir de X milissegundos |
-| frontlog_error | Lista que guarda as referências dos dos erros mostrados no console ou na janela do navegador |
+| frontlog_click | List that stores the references of the clicked elements |
+| frontlog_keypress | List that stores the references of the pressed keys in the elements |
+| frontlog_onhover | List that stores the references of the elements that had the "pointer" on top from X milliseconds |
+| frontlog_error | List that stores the references of the errors shown in the console or in the browser window |
 
-## Objetos
+## Objects
 
 #### Click
 
 ```sh
 {
-    date: //Pega data e hora que o elemento foi clicado,
-    tag: //Tag do elemento,
-    id: //Id do elemento,
-    name: //Name do elemento,
-    element: //Elemento em forma de string
+    date: (Event date and time),
+    tag: (Element tag),
+    id: (Element id),
+    name: (Element name),
+    element: (String-shaped element)
 }
 ```
 
@@ -70,12 +70,12 @@ FrontLog.setup({
 
 ```sh
 {
-    date: //Pega data e hora que a tecla foi pressionada,
-    element_id: //Id do elemento,
-    element_name: //Name do elemento,
-    key_id: //Código da tecla,
-    key_name: //Nome da tecla,
-    key_value: //A tecla
+    date: (Event date and time),
+    element_id: (Element id),
+    element_name: (Element name),
+    key_id: (The key code),
+    key_name: (The key name),
+    key_value: (The value of the key)
 }
 ```
 
@@ -83,11 +83,11 @@ FrontLog.setup({
 
 ```sh
 {
-    date: //Pega data e hora que o "pointer" deixou o elemento,
-    tag: //Tag do elemento,
-    id: //Id do elemento,
-    name: //Name do elemento,
-    timeStamp: //Quanto tempo o "pointer" ficou no elemento (milissegundos)
+    date: (Event date and time),
+    tag: (Element tag),
+    id: (Element id),
+    name: (Element name),
+    timeStamp: (How long the "pointer" was on the element [milliseconds])
 }
 ```
 
@@ -95,8 +95,12 @@ FrontLog.setup({
 
 ```sh
 {
-    date: //Pega data e hora da ocorrência,
-    type: 'window|console', //Tipo do erro
-    error: //Todas as informações passadas pelo erro
+    date: (Error date and time),
+    type: (Error type [window|console]),
+    error: (Error information)
 }
 ```
+
+## Preview
+
+<https://thiegobarros.github.io/frontlog-test/>
